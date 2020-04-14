@@ -1,5 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const webPush = require('web-push');
+const pushSubscriptions = require("../models/subscription")
+const conf = require("../conf.js");
+const fetch = require('fetch');
+
+function pushPostNotification(post, cb) {
+    pushSubscriptions.find({}).populate("keys").exec(function(err, subs) {
+        for(let subscription of subs) {
+            webPush.sendNotification(subscription, JSON.stringify({
+                title: `New post from ${post.location}`,
+                content: post.title,
+                openUrl: "/"
+            })).catch((err) => console.log(err));
+        }
+        cb();
+    });
+}
 
 router.get('/', function(req, res) {
     res.status(200).json({ happy: "f33t"});
@@ -39,11 +56,13 @@ router.post("/posts", function(req, res) {
         if(err) {
             res.status(500).json(err);
         } else {
-            res.status(200).json({
-                id: post._id,
-                title: post.title,
-                location: post.location,
-                image: post.image
+            pushPostNotification(post, function() {
+                res.status(200).json({
+                    id: post._id,
+                    title: post.title,
+                    location: post.location,
+                    image: post.image
+                });
             });
         }
     });

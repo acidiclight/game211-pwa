@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const api = require("./routes/api.js");
 const bodyParser = require('body-parser');
 const webPush = require('web-push');
-const confBecauseImTooFuckingLazyToUseEnvironmentVariables = require("./conf.js");
+const conf = require("./conf.js");
 
 function startApp() {
     const app = express();
@@ -16,33 +16,9 @@ function startApp() {
 }
 
 function setupWebPush(cb) {
-    function whenDone(keys) {
-        webPush.setVapidDetails("mailto:theplexgate@gmail.com", keys.publicKey, keys.privateKey);
-        cb();
-    }
-
-    webPush.setGCMAPIKey(confBecauseImTooFuckingLazyToUseEnvironmentVariables.serverKey);
-
-    const vapidKeysModel = require('./models/vapidKey.js');
-
-    vapidKeysModel.findOne({}).exec(function(err, keys) {
-        if(err) {
-            throw err;
-        } else {
-            if(keys) {
-                whenDone(keys);
-            } else {
-                var newKeys = webPush.generateVAPIDKeys();
-                var newKeyDocument = new vapidKeysModel({
-                    publicKey: newKeys.publicKey,
-                    privateKey: newKeys.privateKey
-                });
-                newKeyDocument.save(function(err, keys) {
-                    whenDone(keys);
-                });
-            }
-        }
-    });
+    webPush.setVapidDetails("mailto:theplexgate@gmail.com", conf.vapidKeys.publicKey, conf.vapidKeys.privateKey);
+    webPush.setGCMAPIKey(conf.serverKey);
+    cb();
 }
 
 mongoose.connect('mongodb://localhost/game211-pwagram')
