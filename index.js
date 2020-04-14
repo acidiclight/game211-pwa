@@ -4,13 +4,14 @@ const api = require("./routes/api.js");
 const bodyParser = require('body-parser');
 const webPush = require('web-push');
 const conf = require("./conf.js");
+const path = require('path');
 
 function startApp() {
     const app = express();
 
     app.use(bodyParser.json());
     app.use('/api', api);
-    app.use(express.static("public"));
+    app.use(express.static(path.join(__dirname, "public")));
 
     app.listen(3000);
 }

@@ -207,7 +207,7 @@ self.addEventListener('sync', function(event) {
                 if (res.ok) {
                   res.json()
                     .then(function(resData) {
-                      deleteItemFromData('sync-posts', resData.id);
+                      deleteItemFromData('sync-posts', dt.id);
                     });
                 }
               })
