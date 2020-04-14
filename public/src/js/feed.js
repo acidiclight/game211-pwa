@@ -87,7 +87,7 @@ function createCard(data) {
   // cardSupportingText.appendChild(cardSaveButton);
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
-  sharedMomentsArea.appendChild(cardWrapper);
+  sharedMomentsArea.prepend(cardWrapper);
 }
 
 function updateUI(data) {
@@ -135,7 +135,7 @@ function sendData() {
       id: new Date().toISOString(),
       title: titleInput.value,
       location: locationInput.value,
-      image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-99adf.appspot.com/o/sf-boat.jpg?alt=media&token=19f4770c-fc8c-4882-92f1-62000ff06f16'
+      image: 'https://http.cat/418.jpg'
     })
   })
     .then(function(res) {
@@ -160,7 +160,8 @@ form.addEventListener('submit', function(event) {
         var post = {
           id: new Date().toISOString(),
           title: titleInput.value,
-          location: locationInput.value
+          location: locationInput.value,
+          image: "https://http.cat/418.jpg"
         };
         writeData('sync-posts', post)
           .then(function() {
@@ -170,6 +171,9 @@ form.addEventListener('submit', function(event) {
             var snackbarContainer = document.querySelector('#confirmation-toast');
             var data = {message: 'Your Post was saved for syncing!'};
             snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+          .then(function() {
+            createCard(post);
           })
           .catch(function(err) {
             console.log(err);

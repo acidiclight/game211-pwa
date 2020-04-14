@@ -199,7 +199,7 @@ self.addEventListener('sync', function(event) {
                 id: dt.id,
                 title: dt.title,
                 location: dt.location,
-                image: '/src/images/main-image-sm.jpg'
+                image: dt.image
               })
             })
               .then(function(res) {
@@ -207,7 +207,8 @@ self.addEventListener('sync', function(event) {
                 if (res.ok) {
                   res.json()
                     .then(function(resData) {
-                      deleteItemFromData('sync-posts', dt.id);
+                      deleteItemFromData('sync-posts', dt.id)
+                      writeData('posts', dt);  
                     });
                 }
               })

@@ -30,7 +30,7 @@ router.get('/posts', function(req, res) {
             res.status(500).json(err);
         } else {
             let responseObject = {};
-            for(let post of posts.reverse()) {
+            for(let post of posts) {
                 responseObject[post._id] = {
                     id: post._id,
                     title: post.title,
